@@ -53,8 +53,8 @@ export const categories: Category[] = [
     ]
   },
   {
-    id: 'weight',
-    name: 'Weight',
+    id: 'mass',
+    name: 'Mass',
     icon: '⚖️',
     color: 'bg-green-400',
     shadowColor: 'shadow-green-600',
@@ -62,6 +62,7 @@ export const categories: Category[] = [
       { id: 'metric_ton', name: 'Metric Ton', symbol: 't', rate: 1000000, example: 'A small car!', emoji: '🚗', description: 'Used for extremely heavy things.' },
       { id: 'kilogram', name: 'Kilogram', symbol: 'kg', rate: 1000, example: 'A thick book!', emoji: '📘', description: 'The base unit of mass in the metric system.' },
       { id: 'gram', name: 'Gram', symbol: 'g', rate: 1, example: 'A paperclip!', emoji: '📎', description: 'Used for measuring light things, like ingredients for baking.' },
+      { id: 'milligram', name: 'Milligram', symbol: 'mg', rate: 0.001, example: 'A grain of sand!', emoji: '🏖️', description: 'Used for very tiny things, like medicine.' },
       { id: 'ton', name: 'Ton', symbol: 'ton', rate: 907184.74, example: 'A small car!', emoji: '🚙', description: 'A US unit for very heavy objects.' },
       { id: 'pound', name: 'Pound', symbol: 'lb', rate: 453.592, example: 'A loaf of bread!', emoji: '🍞', description: 'Commonly used to measure body weight in the US.' },
       { id: 'ounce', name: 'Ounce', symbol: 'oz', rate: 28.349, example: 'A slice of bread!', emoji: '🥪', description: 'Used for measuring very light items in the US.' },
@@ -93,6 +94,40 @@ export const categories: Category[] = [
       { id: 'celsius', name: 'Celsius', symbol: '°C', rate: 1, offset: 0, example: 'Water freezes at 0°C!', emoji: '🧊', description: 'The most common temperature scale worldwide.' },
       { id: 'fahrenheit', name: 'Fahrenheit', symbol: '°F', rate: 5/9, offset: -32, example: 'A hot summer day!', emoji: '☀️', description: 'Primarily used in the United States.' },
       { id: 'kelvin', name: 'Kelvin', symbol: 'K', rate: 1, offset: -273.15, example: 'Used by scientists!', emoji: '🔬', description: 'Used in science; starts at absolute zero.' },
+    ]
+  },
+  {
+    id: 'area',
+    name: 'Area',
+    icon: '🗺️',
+    color: 'bg-emerald-400',
+    shadowColor: 'shadow-emerald-600',
+    units: [
+      { id: 'square_kilometer', name: 'Square Kilometer', symbol: 'km²', rate: 1000000, example: 'A whole city!', emoji: '🏙️', description: 'Used to measure large areas of land.' },
+      { id: 'hectare', name: 'Hectare', symbol: 'ha', rate: 10000, example: 'A large sports field!', emoji: '🏟️', description: 'Often used for measuring farming land.' },
+      { id: 'square_meter', name: 'Square Meter', symbol: 'm²', rate: 1, example: 'A large dining table!', emoji: '🍽️', description: 'The base unit of area in the metric system.' },
+      { id: 'square_centimeter', name: 'Square Centimeter', symbol: 'cm²', rate: 0.0001, example: 'A postage stamp!', emoji: '✉️', description: 'Used for measuring very small surfaces.' },
+      { id: 'square_mile', name: 'Square Mile', symbol: 'sq mi', rate: 2589988.11, example: 'A big national park!', emoji: '🏞️', description: 'Used in the US to measure very large areas.' },
+      { id: 'acre', name: 'Acre', symbol: 'ac', rate: 4046.86, example: 'A big farm!', emoji: '🚜', description: 'Commonly used in the US to measure land.' },
+      { id: 'square_yard', name: 'Square Yard', symbol: 'sq yd', rate: 0.836127, example: 'A small rug!', emoji: '🧶', description: 'Used for measuring things like carpet.' },
+      { id: 'square_foot', name: 'Square Foot', symbol: 'sq ft', rate: 0.092903, example: 'A floor tile!', emoji: '🔲', description: 'Commonly used to measure room sizes in the US.' },
+      { id: 'square_inch', name: 'Square Inch', symbol: 'sq in', rate: 0.00064516, example: 'A small sticker!', emoji: '🏷️', description: 'Used for very small areas in the US.' },
+    ]
+  },
+  {
+    id: 'speed',
+    name: 'Speed',
+    icon: '🚀',
+    color: 'bg-orange-400',
+    shadowColor: 'shadow-orange-600',
+    units: [
+      { id: 'speed_of_light', name: 'Speed of Light', symbol: 'c', rate: 299792458, example: 'The fastest thing in the universe!', emoji: '✨', description: 'How fast light travels in a vacuum.' },
+      { id: 'mach', name: 'Mach (Speed of Sound)', symbol: 'Ma', rate: 343, example: 'A super fast jet!', emoji: '✈️', description: 'The speed of sound in air.' },
+      { id: 'meters_per_second', name: 'Meters per Second', symbol: 'm/s', rate: 1, example: 'A fast runner!', emoji: '🏃', description: 'The base unit of speed in the metric system.' },
+      { id: 'kilometers_per_hour', name: 'Kilometers per Hour', symbol: 'km/h', rate: 0.277778, example: 'A car on the highway!', emoji: '🚗', description: 'Commonly used for vehicle speeds worldwide.' },
+      { id: 'miles_per_hour', name: 'Miles per Hour', symbol: 'mph', rate: 0.44704, example: 'A car on a US highway!', emoji: '🚙', description: 'Commonly used for vehicle speeds in the US and UK.' },
+      { id: 'feet_per_second', name: 'Feet per Second', symbol: 'ft/s', rate: 0.3048, example: 'A thrown baseball!', emoji: '⚾', description: 'Used in the US for measuring velocity.' },
+      { id: 'knot', name: 'Knot', symbol: 'kn', rate: 0.514444, example: 'A fast boat!', emoji: '⛵', description: 'Used for measuring speed of ships and airplanes.' },
     ]
   }
 ];
