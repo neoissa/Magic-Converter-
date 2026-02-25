@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { categories, Category, Unit } from './data/units';
-import { ArrowDownUp, Sparkles } from 'lucide-react';
+import { ArrowDownUp, Sparkles, Info } from 'lucide-react';
+import { UnitSelect } from './components/UnitSelect';
 
 export default function App() {
   const [activeCategory, setActiveCategory] = useState<Category>(categories[0]);
@@ -79,18 +80,23 @@ export default function App() {
               onChange={(e) => setInputValue(e.target.value)}
               className="w-1/3 text-3xl font-bold text-center rounded-2xl border-4 border-blue-200 focus:border-yellow-400 focus:outline-none py-2 text-blue-900"
             />
-            <select
-              value={fromUnit.id}
-              onChange={(e) => setFromUnit(activeCategory.units.find(u => u.id === e.target.value) || activeCategory.units[0])}
-              className="w-2/3 text-xl font-bold rounded-2xl border-4 border-blue-200 focus:border-yellow-400 focus:outline-none px-3 py-2 bg-white appearance-none cursor-pointer text-blue-900"
-            >
-              {activeCategory.units.map(u => (
-                <option key={u.id} value={u.id}>{u.name}</option>
-              ))}
-            </select>
+            <div className="w-2/3">
+              <UnitSelect
+                value={fromUnit}
+                onChange={setFromUnit}
+                options={activeCategory.units}
+                colorTheme="blue"
+              />
+            </div>
           </div>
-          <div className="mt-3 text-blue-600 font-medium flex items-center gap-2">
-             <span className="text-2xl">{fromUnit.emoji}</span> {fromUnit.example}
+          <div className="mt-3 text-blue-600 font-medium flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+               <span className="text-2xl">{fromUnit.emoji}</span> {fromUnit.example}
+            </div>
+            <div className="text-sm opacity-80 flex items-start gap-1 bg-blue-100/50 p-2 rounded-xl">
+              <Info size={16} className="mt-0.5 flex-shrink-0" />
+              {fromUnit.description}
+            </div>
           </div>
         </div>
 
@@ -109,15 +115,14 @@ export default function App() {
         {/* To Box */}
         <div className="bg-green-50 border-4 border-dashed border-green-400 rounded-3xl p-5 mt-4">
           <label className="block text-xl font-bold text-green-500 mb-3">And I want to know...</label>
-          <select
-            value={toUnit.id}
-            onChange={(e) => setToUnit(activeCategory.units.find(u => u.id === e.target.value) || activeCategory.units[0])}
-            className="w-full text-xl font-bold rounded-2xl border-4 border-green-200 focus:border-yellow-400 focus:outline-none px-3 py-3 bg-white appearance-none cursor-pointer mb-4 text-green-900"
-          >
-            {activeCategory.units.map(u => (
-              <option key={u.id} value={u.id}>{u.name}</option>
-            ))}
-          </select>
+          <div className="mb-4">
+            <UnitSelect
+              value={toUnit}
+              onChange={setToUnit}
+              options={activeCategory.units}
+              colorTheme="green"
+            />
+          </div>
           
           <div className="bg-white rounded-2xl py-4 px-2 text-center border-4 border-green-200 overflow-hidden">
             <AnimatePresence mode="wait">
@@ -133,8 +138,14 @@ export default function App() {
             </AnimatePresence>
             <div className="text-green-600 font-bold text-lg mt-2">{toUnit.name}s</div>
           </div>
-          <div className="mt-3 text-green-600 font-medium flex items-center gap-2 justify-center">
-             <span className="text-2xl">{toUnit.emoji}</span> {toUnit.example}
+          <div className="mt-3 text-green-600 font-medium flex flex-col gap-1">
+            <div className="flex items-center justify-center gap-2">
+               <span className="text-2xl">{toUnit.emoji}</span> {toUnit.example}
+            </div>
+            <div className="text-sm opacity-80 flex items-start gap-1 bg-green-100/50 p-2 rounded-xl text-left">
+              <Info size={16} className="mt-0.5 flex-shrink-0" />
+              {toUnit.description}
+            </div>
           </div>
         </div>
 
