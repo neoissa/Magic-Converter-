@@ -5,17 +5,32 @@ import { ArrowDownUp, Sparkles, Info } from 'lucide-react';
 import { UnitSelect } from './components/UnitSelect';
 
 export default function App() {
-  const [activeCategory, setActiveCategory] = useState<Category>(categories[0]);
-  const [fromUnit, setFromUnit] = useState<Unit>(categories[0].units[1]); // Meter
-  const [toUnit, setToUnit] = useState<Unit>(categories[0].units[2]); // Centimeter
+  const [selectedGrade, setSelectedGrade] = useState<number>(3); // Default to Grade 3
+
+  // Filter categories based on grade
+  const availableCategories = useMemo(() => {
+    return categories.filter(cat => !cat.minGrade || selectedGrade >= cat.minGrade);
+  }, [selectedGrade]);
+
+  const [activeCategory, setActiveCategory] = useState<Category>(availableCategories[0]);
+  const [fromUnit, setFromUnit] = useState<Unit>(availableCategories[0].units[1] || availableCategories[0].units[0]);
+  const [toUnit, setToUnit] = useState<Unit>(availableCategories[0].units[2] || availableCategories[0].units[1] || availableCategories[0].units[0]);
   const [inputValue, setInputValue] = useState<string>('1');
+
+  // Reset category if current active is no longer available
+  useEffect(() => {
+    if (!availableCategories.find(c => c.id === activeCategory.id)) {
+      setActiveCategory(availableCategories[0]);
+    }
+  }, [availableCategories, activeCategory]);
 
   // Reset units when category changes
   useEffect(() => {
-    setFromUnit(activeCategory.units[1] || activeCategory.units[0]);
-    setToUnit(activeCategory.units[2] || activeCategory.units[1] || activeCategory.units[0]);
-  }, [activeCategory]);
-
+    // Filter units within category by grade
+    const availableUnits = activeCategory.units.filter(u => !u.minGrade || selectedGrade >= u.minGrade);
+    setFromUnit(availableUnits[1] || availableUnits[0]);
+    setToUnit(availableUnits[2] || availableUnits[1] || availableUnits[0]);
+  }, [activeCategory, selectedGrade]);
   const handleSwap = () => {
     setFromUnit(toUnit);
     setToUnit(fromUnit);
@@ -24,46 +39,74 @@ export default function App() {
   const result = useMemo(() => {
     const numValue = parseFloat(inputValue);
     if (isNaN(numValue)) return 0;
-    
+
     const fromOffset = fromUnit.offset || 0;
     const toOffset = toUnit.offset || 0;
-    
+
     // Convert to base unit first, then to target unit
     const baseValue = (numValue + fromOffset) * fromUnit.rate;
     const finalValue = (baseValue / toUnit.rate) - toOffset;
-    
+
     // Format nicely
     return parseFloat(finalValue.toFixed(4));
   }, [inputValue, fromUnit, toUnit]);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 font-sans">
-      <motion.div 
+      <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         className="bg-white max-w-md w-full rounded-[2rem] p-6 shadow-[0_10px_0px_#80b5e3,0_15px_20px_rgba(0,0,0,0.2)] relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400"></div>
-        
-        <h1 className="text-4xl font-bold text-center text-pink-500 mt-4 mb-6 flex items-center justify-center gap-2">
+
+        <h1 className="text-4xl font-bold text-center text-pink-500 mt-4 mb-2 flex items-center justify-center gap-2">
           <Sparkles className="text-yellow-400" fill="currentColor" />
           Magic Converter
           <Sparkles className="text-yellow-400" fill="currentColor" />
         </h1>
 
+        {/* Grade Selector */}
+        <div className="mb-6 bg-gray-50 rounded-2xl p-4 border-2 border-gray-100">
+          <label className="block text-sm font-bold text-gray-500 mb-3 text-center uppercase tracking-wider">
+            Select Your Grade Level
+          </label>
+          <div className="flex justify-between items-center gap-2">
+            {[
+              { val: 3, label: '3rd-5th', icon: '🎒', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
+              { val: 6, label: '6th-8th', icon: '📚', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200' },
+              { val: 9, label: 'High School', icon: '🎓', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200' }
+            ].map(tier => {
+              const isActive = selectedGrade >= tier.val && (tier.val === 9 || selectedGrade < tier.val + 3);
+              // If it's active, we want to color it brightly
+              const activeStyle = tier.val === 3 ? 'bg-green-500 text-white shadow-md' : tier.val === 6 ? 'bg-blue-500 text-white shadow-md' : 'bg-purple-500 text-white shadow-md';
+
+              return (
+                <button
+                  key={tier.val}
+                  onClick={() => setSelectedGrade(tier.val)}
+                  className={`flex-1 py-2 px-1 rounded-xl font-bold text-sm transition-all focus:outline-none flex flex-col items-center gap-1 ${isActive ? activeStyle : tier.color}`}
+                >
+                  <span className="text-xl">{tier.icon}</span>
+                  {tier.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         {/* Categories */}
         <div className="flex justify-around flex-wrap gap-2 mb-8">
-          {categories.map((cat) => (
+          {availableCategories.map((cat) => (
             <motion.button
               key={cat.id}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95, y: 4, boxShadow: "0 0px 0 rgba(0,0,0,0)" }}
               onClick={() => setActiveCategory(cat)}
-              className={`text-4xl p-4 rounded-2xl transition-colors shadow-[0_6px_0_rgba(0,0,0,0.2)] ${
-                activeCategory.id === cat.id 
-                  ? `${cat.color} ${cat.shadowColor} text-white` 
-                  : 'bg-gray-100 shadow-gray-300 hover:bg-gray-200 text-gray-400'
-              }`}
+              className={`text-4xl p-4 rounded-2xl transition-colors shadow-[0_6px_0_rgba(0,0,0,0.2)] ${activeCategory.id === cat.id
+                ? `${cat.color} ${cat.shadowColor} text-white`
+                : 'bg-gray-100 shadow-gray-300 hover:bg-gray-200 text-gray-400'
+                }`}
             >
               {cat.icon}
             </motion.button>
@@ -84,14 +127,14 @@ export default function App() {
               <UnitSelect
                 value={fromUnit}
                 onChange={setFromUnit}
-                options={activeCategory.units}
+                options={activeCategory.units.filter(u => !u.minGrade || selectedGrade >= u.minGrade)}
                 colorTheme="blue"
               />
             </div>
           </div>
           <div className="mt-3 text-blue-600 font-medium flex flex-col gap-1">
             <div className="flex items-center gap-2">
-               <span className="text-2xl">{fromUnit.emoji}</span> {fromUnit.example}
+              <span className="text-2xl">{fromUnit.emoji}</span> {fromUnit.example}
             </div>
             <div className="text-sm opacity-80 flex items-start gap-1 bg-blue-100/50 p-2 rounded-xl">
               <Info size={16} className="mt-0.5 flex-shrink-0" />
@@ -119,11 +162,11 @@ export default function App() {
             <UnitSelect
               value={toUnit}
               onChange={setToUnit}
-              options={activeCategory.units}
+              options={activeCategory.units.filter(u => !u.minGrade || selectedGrade >= u.minGrade)}
               colorTheme="green"
             />
           </div>
-          
+
           <div className="bg-white rounded-2xl py-4 px-2 text-center border-4 border-green-200 overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
@@ -140,7 +183,7 @@ export default function App() {
           </div>
           <div className="mt-3 text-green-600 font-medium flex flex-col gap-1">
             <div className="flex items-center justify-center gap-2">
-               <span className="text-2xl">{toUnit.emoji}</span> {toUnit.example}
+              <span className="text-2xl">{toUnit.emoji}</span> {toUnit.example}
             </div>
             <div className="text-sm opacity-80 flex items-start gap-1 bg-green-100/50 p-2 rounded-xl text-left">
               <Info size={16} className="mt-0.5 flex-shrink-0" />
